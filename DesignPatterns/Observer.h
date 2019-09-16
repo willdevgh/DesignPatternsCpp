@@ -12,7 +12,7 @@
 #include <functional>
 #include <map>
 
-inline namespace NewEd {
+inline namespace ObserverNewEd {
 	/*
 	改进
 	通过被通知接口参数化和 std::function 来替代继承
@@ -26,17 +26,13 @@ inline namespace NewEd {
 		NonCopyable& operator=(const NonCopyable&) = delete;
 	};
 
-	template <typename Func>
+	template <typename Function>
 	class Events : NonCopyable {
 	public:
 		Events() = default;
 		~Events() = default;
-		// 注册观察者 右值引用
-		int Connect(Func&& f) {
-			return Assgin(f);
-		}
 		// 注册观察者
-		int Connect(const Func& f) {
+		int Connect(Function f) {
 			return Assgin(f);
 		}
 		// 移除观察者
@@ -51,17 +47,17 @@ inline namespace NewEd {
 			}
 		}
 	private:
-		int Assgin(Func&& f) {
+		int Assgin(Function f) {
 			int nId = m_observerId++;
-			m_connections.emplace(nId, std::forward<Func>(f));
+			m_connections.emplace(nId, f);
 			return nId;
 		}
 		int m_observerId = 0; // 观察者对应编号
-		std::map<int, Func> m_connections;
+		std::map<int, Function> m_connections;
 	};
 }
 
-namespace OldEd {
+namespace ObserverOldEd {
 	/*
 	缺点
 	不够通用，只能对 Observer 的抽象类的派生类有效。
@@ -98,4 +94,20 @@ namespace OldEd {
 	private:
 		std::forward_list<Observer*> _observers; // 观察者列表
 	};
+}
+
+// 测试代码
+void TestObserver() {
+	auto printAdd = [](int a, int b) {
+		std::cout << a << " + " << b << " = " << a + b << std::endl;
+	};
+
+	auto printMul = [](int a, int b) {
+		std::cout << a << " * " << b << " = " << a * b << std::endl;
+	};
+
+	Events<std::function<void(int, int)>> evt;
+	int idAdd = evt.Connect(printAdd);
+	int idMul = evt.Connect(printMul);
+	evt.Notify(3, 5);
 }
