@@ -142,6 +142,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="DesignPatterns.h" />
     <ClInclude Include="Observer.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="Visitor.h" />

@@ -6,10 +6,8 @@
 */
 
 #pragma once
+#include "DesignPatterns.h"
 #include <forward_list>
-#include <algorithm>
-#include <string>
-#include <functional>
 #include <map>
 
 inline namespace ObserverNewEd {
