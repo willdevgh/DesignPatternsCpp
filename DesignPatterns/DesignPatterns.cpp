@@ -9,10 +9,6 @@
 
 int main()
 {
-	using namespace VisitorOldEd;
 	// todo: ²âÊÔ´úÂë
-	TestVisitor();
-	system("pause");
     return 0;
 }
-

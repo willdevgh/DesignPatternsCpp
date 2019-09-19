@@ -7,9 +7,10 @@ inline namespace VisitorNewEd {
 	改进
 	使用可变参数模板
 	*/
+
 	template <typename... Types>
 	class Visitor;
-
+	
 	template <typename T, typename... Types>
 	class Visitor<T, Types...> : Visitor<Types...> {
 	public:
@@ -19,7 +20,7 @@ inline namespace VisitorNewEd {
 		using Visitor<Types...>::Visit;
 		virtual void Visit(const T&) = 0;
 	};
-
+	
 	template <typename T>
 	class Visitor<T> {
 	public:
@@ -27,7 +28,47 @@ inline namespace VisitorNewEd {
 		virtual ~Visitor() = default;
 		virtual void Visit(const T&) = 0;
 	};
-}
+	
+	void TestVisitor() {
+		struct stA;
+		struct stB;
+		struct Base {
+			using MyVisitor = Visitor<stA, stB>;
+			virtual void Accept(MyVisitor&) = 0;
+		};
+		struct stA : Base {
+			double val = 0.0;
+			void Accept(Base::MyVisitor& v) {
+				v.Visit(*this);
+			}
+		};
+		struct stB : Base {
+			int val = 0;
+			void Accept(Base::MyVisitor& v) {
+				v.Visit(*this);
+			}
+		};
+		struct PrintVisitor : Base::MyVisitor {
+			void Visit(const stA& a) {
+				std::cout << "from stA: " << a.val << std::endl;
+			}
+
+			void Visit(const stB& b) {
+				std::cout << "from stB: " << b.val << std::endl;
+			}
+		};
+
+		PrintVisitor vis;
+		stA a;
+		a.val = 3.14159;
+		stB b;
+		b.val = 42;
+		Base* base = &a;
+		base->Accept(vis);
+		base = &b;
+		base->Accept(vis);
+	}
+} // inline namespace VisitorNewEd
 
 namespace VisitorOldEd {
 	/*
@@ -98,5 +139,4 @@ namespace VisitorOldEd {
 		e1->Accept(v);
 		e2->Accept(v);
 	}
-
-}
+} // namespace VisitorOldEd
