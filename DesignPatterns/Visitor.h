@@ -38,22 +38,22 @@ inline namespace VisitorNewEd {
 		};
 		struct stA : Base {
 			double val = 0.0;
-			void Accept(Base::MyVisitor& v) {
+			virtual void Accept(Base::MyVisitor& v) override {
 				v.Visit(*this);
 			}
 		};
 		struct stB : Base {
 			int val = 0;
-			void Accept(Base::MyVisitor& v) {
+			virtual void Accept(Base::MyVisitor& v) override {
 				v.Visit(*this);
 			}
 		};
 		struct PrintVisitor : Base::MyVisitor {
-			void Visit(const stA& a) {
+			virtual void Visit(const stA& a) override {
 				std::cout << "from stA: " << a.val << std::endl;
 			}
 
-			void Visit(const stB& b) {
+			virtual void Visit(const stB& b) override {
 				std::cout << "from stB: " << b.val << std::endl;
 			}
 		};
